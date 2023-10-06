@@ -1,6 +1,8 @@
 var express = require('express')
 var router = express.Router()
 
+var pool = require('./queries.js')
+
 router.get('/',(req,res) => {
     pool.query('SELECT * FROM film', (error, queryRes) => {
         if (error){
@@ -10,13 +12,14 @@ router.get('/',(req,res) => {
     })
 })
 
-router.get('/:id',(req,res) => {
-    pool.query(`SELECT * FROM film WHERE id=${req.params.id}`, (error, queryRes) => {
-        if (error){
-            throw error
+router.get('/:id', (req, res) => {
+    const filmId = req.params.id;
+    pool.query('SELECT * FROM film WHERE film_id = $1', [filmId], (error, queryRes) => {
+        if (error) {
+            throw error;
         }
-        res.send(queryRes.rows)
-    })
-})
+        res.send(queryRes.rows);
+    });
+});
 
 module.exports = router
