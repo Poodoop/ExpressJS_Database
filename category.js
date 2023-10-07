@@ -12,9 +12,9 @@ router.get('/',(req,res) => {
     })
 })
 
-router.get('/:id', (req, res) => {
-    const categoryId = req.params.id;
-    pool.query('SELECT * FROM category WHERE category_id = $1', [categoryId], (error, queryRes) => {
+router.get('/:category', (req, res) => {
+    const category = req.params.category.toLowerCase();
+    pool.query('SELECT * FROM film f JOIN film_category fc ON f.film_id = fc.film_id JOIN category c ON c.category_id = fc.category_id WHERE LOWER(c.category_name) = $1', [category], (error, queryRes) => {
         if (error) {
             throw error;
         }
